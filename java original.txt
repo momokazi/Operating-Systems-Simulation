@@ -1,0 +1,164 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+
+class PCB {
+    private static int processIDCounter = 1;
+    private int processID;
+    private String currentState;
+    private String owner;
+    private int priority;
+    private PCB parent;
+    private List<PCB> children;
+    private int memoryReq;
+    private int allocMemory;
+    private PCB mem;
+    private String regSaveArea;
+    private String processor;
+    //private String iostateinfo;
+    // Add other attributes as needed
+
+    public PCB() {
+        processID = processIDCounter++;
+        // Initialize other attributes as needed
+    }
+
+    public int getProcessID() {
+        return processID;
+    }
+}
+
+class ProcessManagementDialog extends JDialog {
+    public ProcessManagementDialog(Frame owner) {
+        super(owner, "Momo OS", true);
+        setSize(400, 300);
+        setLocationRelativeTo(owner);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        String[] processActions = {
+                "Create a process",
+                "Destroy a process",
+                "Suspend a process",
+                "Resume a process",
+                "Block a process",
+                "Wakeup a process",
+                "Dispatch a process",
+                "Change process priority",
+                "Process communication with other processes"
+        };
+
+        for (String action : processActions) {
+            JButton button = new JButton(action);
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            button.addActionListener(e -> handleProcessAction(action));
+            panel.add(button);
+        }
+
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Cancel");
+
+        okButton.addActionListener(e -> dispose());
+        cancelButton.addActionListener(e -> dispose());
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+
+        add(panel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void handleProcessAction(String action) {
+        if (action.equals("Create a process")) {
+            PCB newProcess = new PCB();
+            System.out.println("New process created with ID: " + newProcess.getProcessID());
+        }
+        // Add handling for other actions as needed
+    }
+}
+
+class ConfigurationDialog extends JDialog {
+    public ConfigurationDialog(Frame owner) {
+        super(owner, "Configuration", true);
+        setLocationRelativeTo(owner);
+
+        JButton setParametersButton = new JButton("Set Parameters");
+        setParametersButton.addActionListener(e -> {
+            System.out.println("Set Parameters button clicked!");
+            // Add your logic for setting parameters here
+        });
+
+        add(setParametersButton);
+    }
+}
+
+class MainWindow extends JFrame {
+    public MainWindow() {
+        setTitle("Momo OS");
+        setMinimumSize(new Dimension(400, 400));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        JLabel titleLabel = new JLabel("Momo OS");
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        mainPanel.add(titleLabel);
+
+        JButton processManagementButton = new JButton("Process Management");
+        processManagementButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Insets buttonInsets = new Insets(5, 10, 5, 10);
+        processManagementButton.setMargin(buttonInsets);
+        processManagementButton.addActionListener(e -> onProcessManagementClicked());
+        mainPanel.add(processManagementButton);
+
+
+        String[] additionalActions = {
+                "Memory Management",
+                "I/O Management",
+                "Other Operations"
+        };
+
+        for (String action : additionalActions) {
+            JButton button = new JButton(action);
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            button.setMargin(buttonInsets);
+            mainPanel.add(button);
+        }
+
+        JButton configurationButton = new JButton("Configuration");
+        configurationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        configurationButton.setBackground(Color.GREEN);
+        configurationButton.addActionListener(e -> onConfigurationClicked());
+        mainPanel.add(configurationButton);
+
+        setContentPane(mainPanel);
+    }
+
+    private void onProcessManagementClicked() {
+        ProcessManagementDialog dialog = new ProcessManagementDialog(this);
+        dialog.setVisible(true);
+    }
+
+    private void onConfigurationClicked() {
+        ConfigurationDialog dialog = new ConfigurationDialog(this);
+        dialog.setVisible(true);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.pack();
+            mainWindow.setLocationRelativeTo(null);
+            mainWindow.setVisible(true);
+        });
+    }
+}
